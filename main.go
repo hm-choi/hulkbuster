@@ -24,7 +24,7 @@ func main() {
 	for i := 1; i < 10; i++ {
 		rot_list = append(rot_list, i*120)
 	}
-	for i := 1; i < 7; i++ {
+	for i := 1; i < 6; i++ {
 		rot_list = append(rot_list, i*1200)
 	}
 	sk, pk, rlk, evk, glk := hulkbuster.KeyGen(params, rot_list)
@@ -40,7 +40,6 @@ func main() {
 	a[0] = make([]float64, 1014)
 	for j := 0; j < 1014; j++ {
 		a[0][j] = rand.Float64()
-		a[0][j] = 0.1
 	}
 
 	b := [][]float64{}

@@ -25,14 +25,14 @@ func FC_Layer(eval_list []*hefloat.Evaluator, wg *sync.WaitGroup, input_ctxt *rl
 		if TMP >= num_thread {
 			wg.Add(num_thread)
 			for j := 0; j < num_thread; j++ {
-				go RotAndMult(IDX, input_ctxt, coeff[IDX], output_ciphers, wg, IDX, *eval_list[IDX%num_thread])
+				go MultAndRot(IDX, input_ctxt, coeff[IDX], output_ciphers, wg, IDX, *eval_list[IDX%num_thread])
 				IDX += 1
 			}
 			wg.Wait()
 		} else {
 			wg.Add(TMP)
 			for j := CON1 - TMP; j < CON1; j++ {
-				go RotAndMult(IDX, input_ctxt, coeff[IDX], output_ciphers, wg, IDX, *eval_list[IDX%num_thread])
+				go MultAndRot(IDX, input_ctxt, coeff[IDX], output_ciphers, wg, IDX, *eval_list[IDX%num_thread])
 				IDX += 1
 			}
 			wg.Wait()
