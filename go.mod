@@ -1,6 +1,6 @@
 module github.com/hm-choi/main
 
-go 1.21.5
+go 1.18
 
 require github.com/tuneinsight/lattigo/v5 v5.0.2
 

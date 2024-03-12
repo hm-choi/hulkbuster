@@ -2,18 +2,22 @@ package hulkbuster
 
 import (
 	"sync"
-
+	"math"
 	"github.com/tuneinsight/lattigo/v5/core/rlwe"
 	"github.com/tuneinsight/lattigo/v5/he/hefloat"
 )
 
 func FC_Layer(eval_list []*hefloat.Evaluator, wg *sync.WaitGroup, input_ctxt *rlwe.Ciphertext,
-	coeff [][]float64, num_thread int, input_size int, output_size int) *rlwe.Ciphertext {
+	coeff [][]float64, num_thread int, input_size int, output_size int, number_of_slots int) *rlwe.Ciphertext {
 	if len(coeff) < num_thread {
 		num_thread = output_size
 	}
 
-	CON1, CON2, CON3 := 20, 10, 6
+	data_size := output_size * int(math.Ceil(float64(input_size) / float64(output_size)) + 1)
+	CON3 := number_of_slots / data_size // 6
+	CON1 := output_size / CON3 			// 20
+	CON2 := data_size / output_size 	// 10
+
 	output_ciphers := make([]*rlwe.Ciphertext, CON1)
 	for i := 0; i < CON1; i++ {
 		output_ciphers[i] = input_ctxt.CopyNew()
@@ -86,7 +90,7 @@ func FC_Layer(eval_list []*hefloat.Evaluator, wg *sync.WaitGroup, input_ctxt *rl
 
 	wg.Add(CON3)
 	for i := 0; i < CON3; i++ {
-		go RotateAndSum(i*1200, rotated_sum, output_ciphers, wg, i, *eval_list[i%num_thread])
+		go RotateAndSum(i*data_size, rotated_sum, output_ciphers, wg, i, *eval_list[i%num_thread])
 	}
 	wg.Wait()
 
